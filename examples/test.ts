@@ -1,1 +1,4 @@
-import * as careful from "https://deno.land/x/careful@v0.0.1-alpha";
+import { Either, Maybe } from "../mod.ts";
+
+console.log(Maybe.is<number>(10));
+console.log(Either.isLeft<number>(10).left.map((n) => n * 2));
