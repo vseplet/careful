@@ -1,82 +1,94 @@
-import { v1 } from "https://deno.land/std@0.91.0/uuid/mod.ts";
-import { NonNullable, NullOr, NullOrUndefined } from "./base.ts";
-import { Maybe } from "./Maybe.ts";
+import { Functor } from "./Functor.ts";
 
-interface IEither<T0, T1> {
-  _traceId: string;
-  _left: NullOr<T0>;
-  _right: NullOr<T1>;
+abstract class EitherFunctor<T> extends Functor<T> {
+  abstract extractLeft(): T | null;
+  abstract extractRight(): T | null;
+  abstract mapLeft<K>(cb: (value: T) => K): EitherFunctor<K> | EitherFunctor<T>;
+  abstract mapRight<K>(
+    cb: (value: T) => K,
+  ): EitherFunctor<K> | EitherFunctor<T>;
+
+  // abstract aMapLeft<K>(
+  //   cb: (value: T) => K,
+  // ): Promise<EitherFunctor<K> | EitherFunctor<T>>;
+  // abstract aMapRight<K>(
+  //   cb: (value: T) => K,
+  // ): Promise<EitherFunctor<K> | EitherFunctor<T>>;
 }
 
-abstract class AEither<T0, T1> implements IEither<T0, T1> {
-  abstract _left: NullOr<T0>;
-  abstract _right: NullOr<T1>;
-  abstract _traceId: string;
-  abstract _maybeLeft: Maybe<T0>;
-  abstract _maybeRight: Maybe<T1>;
-  abstract left: Maybe<T0>;
-  abstract right: Maybe<T1>;
-}
-
-type TLeftOrRight<T0, T1> = [T0, NullOrUndefined] | [NullOrUndefined, T1];
-type TWarpCallback<T0, T1> = () => TLeftOrRight<T0, T1>;
-type TWarpAsyncCallback<T0, T1> = () => Promise<TLeftOrRight<T0, T1>>;
-
-export class Either<T0, T1> implements AEither<T0, T1> {
-  _traceId: string;
-  _maybeLeft: Maybe<T0>;
-  _maybeRight: Maybe<T1>;
-  _left: NullOr<T0>;
-  _right: NullOr<T1>;
-
-  constructor(
-    values: TLeftOrRight<T0, T1>,
-    traceId: string = "",
-  ) {
-    this._traceId = traceId || v1.generate().toString();
-    this._left = values[0] === undefined ? null : values[0];
-    this._right = values[1] === undefined ? null : values[1];
-    this._maybeLeft = Maybe.is<T0>(this._left);
-    this._maybeRight = Maybe.is<T1>(this._right);
+export class Left<TL> extends EitherFunctor<TL> {
+  constructor(left: TL, trackId: number | null = null) {
+    super(left, trackId);
   }
 
-  public get left(): Maybe<T0> {
-    return this._maybeLeft;
+  extract(): TL {
+    return this._value;
   }
 
-  public get right(): Maybe<T1> {
-    return this._maybeRight;
+  map<KL>(cb: (value: TL) => KL): Left<KL> {
+    return new Left<KL>(cb(this._value));
   }
 
-  static is<T0, T1>(values: TLeftOrRight<T0, T1>) {
-    return new Either<T0, T1>(values);
+  extractLeft(): TL {
+    return this.extract();
   }
 
-  static isRight<T>(value: NonNullable<T>): AEither<null, T> {
-    return new Either<null, T>([null, value]);
+  extractRight() {
+    return null;
   }
 
-  static isLeft<T>(value: NonNullable<T>): AEither<T, null> {
-    return new Either<T, null>([value, null]);
+  mapLeft<KL>(cb: (n: TL) => KL): Left<KL> {
+    return this.map<KL>(cb);
   }
 
-  static wrap<T0, T1>(cb: TWarpCallback<T0, T1>): Maybe<AEither<T0, T1>> {
-    try {
-      return Maybe.is<AEither<T0, T1>>(Either.is<T0, T1>(cb()));
-    } catch (e: unknown) {
-      console.error(e);
-      return Maybe.is<AEither<T0, T1>>(null);
-    }
+  mapRight() {
+    return this;
   }
 
-  static async awrap<T0, T1>(
-    cb: TWarpAsyncCallback<T0, T1>,
-  ): Promise<Maybe<AEither<T0, T1>>> {
-    try {
-      return Maybe.is<AEither<T0, T1>>(Either.is<T0, T1>(await cb()));
-    } catch (e: unknown) {
-      console.error(e);
-      return Maybe.is<AEither<T0, T1>>(null);
-    }
+  static is(entity: Either<unknown, unknown>): boolean {
+    return entity instanceof Left;
+  }
+
+  static it<T>(value: T): Left<T> {
+    return new Left<T>(value);
   }
 }
+export class Right<TR> extends EitherFunctor<TR> {
+  constructor(right: TR, trackId: number | null = null) {
+    super(right, trackId);
+  }
+
+  public map<KR>(cb: (value: TR) => KR): Right<KR> {
+    return new Right<KR>(cb(this._value));
+  }
+
+  extract(): TR {
+    return this._value;
+  }
+
+  extractRight(): TR {
+    return this._value;
+  }
+
+  extractLeft(): null {
+    return null;
+  }
+
+  mapLeft(): Right<TR> {
+    return this;
+  }
+
+  mapRight<KR>(cb: (n: TR) => KR): Right<KR> {
+    return this.map<KR>(cb);
+  }
+
+  static is(entity: Either<unknown, unknown>): boolean {
+    return entity instanceof Right;
+  }
+
+  static it<T>(value: T): Right<T> {
+    return new Right<T>(value);
+  }
+}
+
+export type Either<TL, TR> = Left<TL> | Right<TR>;
