@@ -1,4 +1,4 @@
 import { Either, Maybe } from "../mod.ts";
 
-console.log(Maybe.is<number>(10));
-console.log(Either.isLeft<number>(10).left.map((n) => n * 2));
+console.log(Maybe.just<number>(10));
+console.log(Either.left<number, number>(10));

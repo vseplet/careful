@@ -1,56 +1,47 @@
-import { Functor } from "./Functor.ts";
+import { NullOr } from "./base.ts";
+import { MonadAbstraction } from "./Monad.ts";
 
-export class Just<T> extends Functor<T> {
-  constructor(value: T, trackId: number | null = null) {
-    super(value, trackId);
+abstract class MaybeAbstracton<T> extends MonadAbstraction<T, T> {
+  abstract isJust(): boolean;
+  abstract isNothing(): boolean;
+}
+
+export class Maybe<T> extends MaybeAbstracton<T> {
+  protected map<X>(cb: (v: T) => X): Maybe<X | T> {
+    throw new Error("Method not implemented.");
+  }
+  protected amap<X>(
+    md: Maybe<(v: T) => X>,
+  ): Maybe<X | T> {
+    throw new Error("Method not implemented.");
+  }
+  protected fmap<X>(
+    cb: (v: T) => Maybe<X>,
+  ): Maybe<X | T> {
+    throw new Error("Method not implemented.");
   }
 
-  extract(): T {
+  extract(): T | null {
     return this._value;
   }
 
-  map<K>(cb: (n: T) => K): Just<K> {
-    return new Just<K>(cb(this._value), this._trackId);
+  isJust(): boolean {
+    return this._value !== null;
   }
 
-  async amap<K>(cb: (n: T) => Promise<K>): Promise<Just<K>> {
-    return new Just<K>(await cb(this._value));
+  isNothing(): boolean {
+    return this._value === null;
   }
 
-  static is(entity: Maybe<unknown>): boolean {
-    return entity instanceof Just;
+  static it<T>(value: NullOr<T>) {
+    return new Maybe<T>(value);
   }
 
-  static it<T>(value: T): Just<T> {
-    return new Just<T>(value);
-  }
-}
-
-export class Nothing extends Functor<null> {
-  constructor(trackId: number | null = null) {
-    super(null, trackId);
+  static just<T>(v: T): Maybe<T> {
+    return new Maybe<T>(v);
   }
 
-  extract(): null {
-    return null;
-  }
-
-  map(): Nothing {
-    return new Nothing(this._trackId);
-  }
-
-  // deno-lint-ignore require-await
-  async amap(): Promise<Nothing> {
-    return new Nothing(this._trackId);
-  }
-
-  static is(entity: Maybe<unknown>): boolean {
-    return entity instanceof Nothing;
-  }
-
-  static it(): Nothing {
-    return new Nothing();
+  static nothing<T>(): Maybe<T> {
+    return new Maybe<T>(null);
   }
 }
-
-export type Maybe<T> = Just<T> | Nothing;
