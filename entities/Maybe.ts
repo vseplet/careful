@@ -1,27 +1,27 @@
 import { NullOr } from "./base.ts";
 import { MonadAbstraction } from "./Monad.ts";
 
-abstract class MaybeAbstracton<T> extends MonadAbstraction<T, T> {
-  abstract isJust(): boolean;
-  abstract isNothing(): boolean;
+export abstract class MaybeAbstracton<T> extends MonadAbstraction<T, T> {
+  protected abstract isJust(): boolean;
+  protected abstract isNothing(): boolean;
 }
 
 export class Maybe<T> extends MaybeAbstracton<T> {
-  protected map<X>(cb: (v: T) => X): Maybe<X | T> {
+  protected map<X>(cb: (v: T) => X): Maybe<X> {
     throw new Error("Method not implemented.");
   }
   protected amap<X>(
     md: Maybe<(v: T) => X>,
-  ): Maybe<X | T> {
+  ): Maybe<X> {
     throw new Error("Method not implemented.");
   }
   protected fmap<X>(
     cb: (v: T) => Maybe<X>,
-  ): Maybe<X | T> {
+  ): Maybe<X> {
     throw new Error("Method not implemented.");
   }
 
-  extract(): T | null {
+  public extract(): T | null {
     return this._value;
   }
 
@@ -45,3 +45,5 @@ export class Maybe<T> extends MaybeAbstracton<T> {
     return new Maybe<T>(null);
   }
 }
+
+export type PromisesMaybe<T> = Promise<Maybe<T>>

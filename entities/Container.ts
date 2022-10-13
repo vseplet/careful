@@ -7,5 +7,5 @@ export abstract class ContainerAbstraction<T> {
     this._trackId = trackId || Math.random();
   }
 
-  abstract extract(): (T | null) | T;
+  protected abstract extract(): (T | null) | T;
 }
