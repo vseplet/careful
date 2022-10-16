@@ -12,14 +12,14 @@
         ".fleet",
         ".git"
       ]
-    },
-    "options": {
-      "useTabs": false,
-      "lineWidth": 80,
-      "indentWidth": 2,
-      "singleQuote": true,
-      "proseWrap": "preserve"
     }
+  },
+  "options": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "proseWrap": "preserve"
   },
 
   "test": {

@@ -1,4 +1,4 @@
-import { EitherError } from '../mod.ts';
+import { EitherError } from "../mod.ts";
 
 // const getUser = async (name: string): Promise<EitherError<User>> => {
 //   try {
