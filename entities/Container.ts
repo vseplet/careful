@@ -1,11 +1,13 @@
-export abstract class ContainerAbstraction<T> {
-  protected _trackId: number;
-  protected _value: (T | null) | T;
+import { NullOr } from "./base.ts";
 
-  constructor(value: (T | null) | T, trackId: number | null = null) {
+export abstract class ContainerAbstraction<T, K> {
+  protected _trackId: number;
+  protected _value: T | K;
+
+  constructor(value: T | K, trackId: NullOr<number> = null) {
     this._value = value;
     this._trackId = trackId || Math.random();
   }
 
-  protected abstract extract(): (T | null) | T;
+  protected abstract extract(): T | K;
 }

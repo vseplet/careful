@@ -1,46 +1,48 @@
-import { MonadAbstraction } from "./Monad.ts";
+import { NullOr } from "./base.ts";
+import { ContainerAbstraction } from "./Container.ts";
 
 export enum EitherState {
   Left,
   Right,
 }
-export abstract class EitherAbstraction<TL, TR>
-  extends MonadAbstraction<TL, TR> {
+
+export abstract class EitherAbstraction<TL, TR> extends ContainerAbstraction<TL, TR> {
 }
 
-export class Either<TL, TR> extends MonadAbstraction<TL, TR> {
-  protected async ay<X>(md: Promise<Either<(v: TL) => X | TL, (v: TR) => X | TR>>): Promise<Either<X,TR> | Either<TL,X>> {
-    throw new Error("Method not implemented.");
-  }
+export class Either<TL, TR> extends EitherAbstraction<TL, TR> {
+  protected _direction: EitherState;
 
-  constructor(value: TL | TR, trackId: number | null = null) {
+  constructor(value: TL | TR, dir: EitherState, trackId: NullOr<number> = null) {
     super(value, trackId);
+    this._direction = dir;
   }
 
-  protected async ax<X>(cb: (v: TL|TR) => Promise<X>): Promise<Either<X,TR> | Either<TL,X>> {
-    throw new Error("Method not implemented.");
+  isLeft(): boolean {
+    return this._direction === EitherState.Left;
   }
 
-  protected x<X>(
-    cb: (v: TL | TR) => X,
-  ): Either<X, TR> | Either<TL, X> {
-    throw new Error("Method not implemented.");
+  isRigt(): boolean {
+    return this._direction === EitherState.Right;
   }
 
-  protected y<X>(
-    md: Either<(v: TL) => X, (v: TR) => X>,
-  ): Either<X, TR> | Either<TL, X> {
-    throw new Error("Method not implemented.");
+  extract(): TL | TR {
+    return this._value;
   }
 
-  protected z<X>(
-    cb: (v: TL | TR) => Either<X, TR> | Either<TL, X>,
-  ): Either<X, TR> | Either<TL, X> {
-    throw new Error("Method not implemented.");
+  extractLeft(): TL {
+    return this._value as TL;
   }
 
-  protected extract(): TL | TR | null {
-    throw new Error("Method not implemented.");
+  extractRight(): TR {
+    return this._value as TR;
+  }
+
+  static left<TL, TR>(value: TL): Either<TL, TR> {
+    return new Either<TL, TR>(value, EitherState.Left);
+  }
+
+  static right<TL, TR>(value: TR): Either<TL, TR> {
+    return new Either<TL, TR>(value, EitherState.Right );
   }
 }
 

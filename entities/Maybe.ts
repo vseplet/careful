@@ -1,50 +1,44 @@
-import { NullOr } from "./base.ts";
-import { MonadAbstraction } from "./Monad.ts";
+import { ContainerAbstraction } from "./Container.ts";
 
-export abstract class MaybeAbstracton<T> extends MonadAbstraction<T, T> {
+export abstract class MaybeAbstracton<T> extends ContainerAbstraction<T, null> {
   protected abstract isJust(): boolean;
   protected abstract isNothing(): boolean;
 }
 
 export class Maybe<T> extends MaybeAbstracton<T> {
-  protected x<X>(
-    cb: (v: T) => X
-  ): Maybe<X> {
-    throw new Error("Method not implemented.");
+  smap<K>(cb: (v: T) => K): Maybe<K> {
+    if (this._value !== null) {
+      return new Maybe<K>(cb(this._value), this._trackId)
+    } else {
+      return new Maybe<K>(null, this._trackId)
+    }
   }
 
-  protected y<X>(
-    md: Maybe<(v: T) => X>,
-  ): Maybe<X> {
-    throw new Error("Method not implemented.");
+  async map<K>(cb: (v: T) => Promise<K>): Promise<Maybe<K>> {
+    if (this._value !== null) {
+      return new Maybe<K>(await cb(this._value), this._trackId)
+    } else {
+      return new Maybe<K>(null, this._trackId)
+    }
   }
 
-  protected z<X>(
-    cb: (v: T) => Maybe<X>,
-  ): Maybe<X> {
-    throw new Error("Method not implemented.");
+  sfmap<K>(cb: (v: T) => K): Maybe<K> {
+    if (this._value !== null) {
+      return new Maybe<K>(cb(this._value), this._trackId)
+    } else {
+      return new Maybe<K>(null, this._trackId)
+    }
   }
 
-  protected async az<X>(
-    cb: (v: T) => Promise<Maybe<X>>
-  ): Promise<Maybe<X>> {
-    throw new Error("Method not implemented.");
+  async fmap<K>(cb: (v: T) => Promise<K>): Promise<Maybe<K>> {
+    if (this._value !== null) {
+      return new Maybe<K>(await cb(this._value), this._trackId)
+    } else {
+      return new Maybe<K>(null, this._trackId)
+    }
   }
 
-  protected async ay<X>(
-    md: Promise<Maybe<(v: T) => X>>
-  ): Promise<Maybe<X>> {
-    throw new Error("Method not implemented.");
-  }
-
-  protected async ax<X>(
-    cb: (v: T) => Promise<X>
-  ): Promise<Maybe<X>> {
-    throw new Error("Method not implemented.");
-  }
-
-
-  public extract(): T | null {
+  extract(): T | null {
     return this._value;
   }
 
@@ -56,12 +50,8 @@ export class Maybe<T> extends MaybeAbstracton<T> {
     return this._value === null;
   }
 
-  static it<T>(value: NullOr<T>) {
+  static just<T>(value: T): Maybe<T> {
     return new Maybe<T>(value);
-  }
-
-  static just<T>(v: T): Maybe<T> {
-    return new Maybe<T>(v);
   }
 
   static nothing<T>(): Maybe<T> {
