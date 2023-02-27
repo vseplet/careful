@@ -7,5 +7,3 @@ export type PromiseNullOr<T> = Promise<NullOr<T>>;
 export type ErrorOr<T> = Error | T;
 
 export type PromiseErrorOr<T> = Promise<ErrorOr<T>>;
-
-export type s = string;

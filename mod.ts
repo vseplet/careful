@@ -1,11 +1,10 @@
-export * from './src/base.ts';
-export * from './src/entities/Option.ts';
-export * from './src/entities/OptionError.ts';
-export * from './src/entities/SecondOption.ts';
-export * from './src/entities/Either.ts';
-export * from './src/entities/EitherError.ts';
-export * from './src/entities/IO.ts';
-export * from './src/operators/pipe.ts';
+export * from './src/types.ts';
+export * from './src/containers/Option.ts';
+export * from './src/containers/OptionError.ts';
+export * from './src/containers/SecondOption.ts';
+export * from './src/containers/Either.ts';
+export * from './src/containers/EitherError.ts';
+export * from './src/containers/IO.ts';
 
-console.log('Hello, world!');
-console.log('Hello, world!');
+export * from './src/operators/pipe.ts';
+export * from './src/operators/curry.ts';

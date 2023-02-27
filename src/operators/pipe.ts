@@ -167,6 +167,27 @@ interface Pipe {
   ): P;
 }
 
+/**
+ * This pipe function that takes
+ * a value and a list of functions
+ * and returns the result of applying
+ * the value to the functions in order.
+ * @param params - The value and functions to apply.
+ * @returns {*} - The result of applying the value to the functions in order.
+ * @example
+ * const add = (a: number) => a + 1;
+ * const multiply = (a: number) => a * 2;
+ * const divide = (a: number) => a / 2;
+ * const subtract = (a: number) => a - 1;
+ * const result = pipe(
+ *  1,
+ * add,
+ * multiply,
+ * divide,
+ * subtract,
+ * );
+ * console.log(result); // 1
+ */
 // deno-lint-ignore no-explicit-any
 export const pipe: Pipe = <A extends any[]>(...params: A) => {
   const [value, ...callbacks] = params;
