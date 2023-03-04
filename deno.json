@@ -54,7 +54,7 @@
     "module": "esnext",
     "moduleDetection": "force",
 
-    "lib": ["deno.window", "deno.ns", "deno.worker"],
+    "lib": ["deno.window"],
 
     "useDefineForClassFields": true,
     "experimentalDecorators": true,

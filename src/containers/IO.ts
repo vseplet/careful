@@ -1,3 +1,6 @@
+import { NullOr } from '../types.ts';
+import { Container } from './Container.ts';
+
 export type Effect<T> = () => T;
 export type AsyncEffect<T> = () => Promise<T>;
 export type AnyEffect<T> = Effect<T> | AsyncEffect<T>;
@@ -21,10 +24,11 @@ export type AnyEffect<T> = Effect<T> | AsyncEffect<T>;
  * console.log(dateIO.execute());
  * // -> Output: "Sat Feb 27 2023 11:05:39 GMT-0800 (Pacific Standard Time)"
  */
-export class IO<A> {
+export class IO<A> extends Container<Effect<A>> {
   private effect: Effect<A>;
 
-  constructor(effect: Effect<A>) {
+  constructor(effect: Effect<A>, trackId: NullOr<string> = null) {
+    super(effect, trackId);
     this.effect = effect;
   }
 
@@ -48,27 +52,3 @@ export class IO<A> {
     return await (this.effect as AsyncEffect<A>)();
   }
 }
-
-// map<B>(f: (val: A) => B): IO<B> {
-//   return new IO(() => f((this.effect as Effect<A>)()));
-// }
-
-// fmap<B>(f: (val: A) => IO<B>): IO<B> {
-//   return new IO(() =>
-//     (f(
-//       (this.effect as Effect<A>)(),
-//     ).effect as Effect<B>)()
-//   );
-// }
-
-// amap<B>(f: (val: A) => B): IO<B> {
-//   return new IO(() => f((this.effect as Effect<A>)()));
-// }
-
-// afmap<B>(f: (val: A) => IO<B>): IO<B> {
-//   return new IO(() =>
-//     (f(
-//       (this.effect as Effect<A>)(),
-//     ).effect as Effect<B>)()
-//   );
-// }
