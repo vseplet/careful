@@ -1,3 +1,6 @@
+/**
+ * @interface Pipe
+ */
 interface Pipe {
   <A>(a: A): A;
   <A, B>(
@@ -172,7 +175,7 @@ interface Pipe {
  * a value and a list of functions
  * and returns the result of applying
  * the value to the functions in order.
- * @param params - The value and functions to apply.
+ * @param args - The value and functions to apply.
  * @returns {*} - The result of applying the value to the functions in order.
  * @example
  * const add = (a: number) => a + 1;
@@ -180,16 +183,18 @@ interface Pipe {
  * const divide = (a: number) => a / 2;
  * const subtract = (a: number) => a - 1;
  * const result = pipe(
- *  1,
- * add,
- * multiply,
- * divide,
- * subtract,
+ *   1,
+ *   add,
+ *   multiply,
+ *   divide,
+ *   subtract,
  * );
  * console.log(result); // 1
  */
-// deno-lint-ignore no-explicit-any
-export const pipe: Pipe = <A extends any[]>(...params: A) => {
-  const [value, ...callbacks] = params;
+
+export const pipe: Pipe = <A extends any[]>(...args: A) => {
+  const [value, ...callbacks] = args;
   return callbacks.reduce((value, callback) => callback(value), value);
 };
+
+// TODO: make async pipe

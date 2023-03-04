@@ -8,3 +8,4 @@ export * from './src/containers/IO.ts';
 
 export * from './src/operators/pipe.ts';
 export * from './src/operators/curry.ts';
+export * from './src/operators/compose.ts';

@@ -18,16 +18,84 @@ export class Either<TL, TR> extends Container<TL, TR> {
     this._state = state;
   }
 
-  mapLeft<TLL>() {
+  /**
+   * @param cb - The callback to apply to the value.
+   * @returns {Either} - Returns a new Either with the result of the callback.
+   * @example
+   * const either = Either.right(1);
+   * const result = either.mapLeft((value) => value + 1);
+   * console.log(result); // Either { value: 2 }
+   */
+  mapLeft<TLL>(cb: (v: TL) => TLL): Either<TLL, TR> {
+    try {
+      return this._state === Left
+        ? new Either<TLL, TR>(cb(this._value as TL), Left, this._trackId)
+        : new Either<TLL, TR>(this._value as TR, Right, this._trackId);
+    } catch (e) {
+      const either = new Either<TLL, TR>(
+        this._value as TR,
+        Right,
+        this._trackId,
+      );
+      either._error = e as Error;
+      return either;
+    }
   }
 
-  mapRight<TRR>() {
+  /**
+   * @param cb - The callback to apply to the value.
+   * @returns {Either} - Returns a new Either with the result of the callback.
+   * @example
+   * const either = Either.right<number, string>("1");
+   * const result = either.mapRight((value) => value + "1");
+   * console.log(result); // Either { value: "11" }
+   */
+  mapRight<TRR>(cb: (v: TR) => TRR): Either<TL, TRR> {
+    try {
+      return this._state === Right
+        ? new Either<TL, TRR>(cb(this._value as TR), Right, this._trackId)
+        : new Either<TL, TRR>(this._value as TL, Left, this._trackId);
+    } catch (e) {
+      const either = new Either<TL, TRR>(
+        this._value as TL,
+        Left,
+        this._trackId,
+      );
+      either._error = e as Error;
+      return either;
+    }
   }
 
-  async amapLeft<TLL>() {
+  async amapLeft<TLL>(cb: (v: TL) => Promise<TLL>): Promise<Either<TLL, TR>> {
+    try {
+      return this._state === Left
+        ? new Either<TLL, TR>(await cb(this._value as TL), Left, this._trackId)
+        : new Either<TLL, TR>(this._value as TR, Right, this._trackId);
+    } catch (e) {
+      const either = new Either<TLL, TR>(
+        this._value as TR,
+        Right,
+        this._trackId,
+      );
+      either._error = e as Error;
+      return either;
+    }
   }
 
-  async amapRight<TRR>() {
+  async amapRight<TRR>(cb: (v: TR) => Promise<TRR>): Promise<Either<TL, TRR>> {
+    try {
+      return this._state === Right
+        ? new Either<TL, TRR>(await cb(this._value as TR), Right, this._trackId)
+        : new Either<TL, TRR>(this._value as TL, Left, this._trackId);
+    } catch (e) {
+      const either = new Either<TL, TRR>(
+        this._value as TL,
+        Left,
+        this._trackId,
+      );
+      either._error = e as Error;
+      return either;
+    }
   }
 
   fmapLeft<TLL>() {

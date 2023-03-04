@@ -26,3 +26,5 @@ export function curry<T extends unknown[], R>(fn: (...args: T) => R) {
     }
   };
 }
+
+// TODO: make async curry
