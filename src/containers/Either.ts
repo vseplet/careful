@@ -53,6 +53,23 @@ export class Right<T> extends EitherAbstract<T> {
   }
 }
 
+/**
+ * The Either class represents a value of one of two possible types
+ * (a disjoint union). An Either is either a Left or a Right.
+ * @type Either<TL, TR>
+ * @param TL - The type of the Left value
+ * @param TR - The type of the Right value
+ * @example
+ * const generate = (): Either<number, string> =>
+ *   Math.random() > 0.5 ? left(5) : right("Hello!");
+
+ * const either = generate()
+ *   .mL((v) => v * v)
+ *   .mR((v) => v.split(""));
+ *
+ * console.log(either);
+ * // -> Left(25) or Right(["H", "e", "l", "l", "o", "!"])
+ */
 export type Either<TL, TR> = Left<TL> | Right<TR>;
 
 export const left = <TL, TR>(v: TL): Either<TL, TR> => new Left(v);

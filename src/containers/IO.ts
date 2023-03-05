@@ -15,7 +15,7 @@ export type AnyEffect<T> = Effect<T> | AsyncEffect<T>;
  * a function of type () => A, which
  * is called the "effect".
  * @class IO
- * @template T
+ * @template T - The type of value returned by the effect
  * @property {T} value - The value contained in the container.
  * @example
  * const getDate = () => new Date().toString();
@@ -25,11 +25,8 @@ export type AnyEffect<T> = Effect<T> | AsyncEffect<T>;
  * // -> Output: "Sat Feb 27 2023 11:05:39 GMT-0800 (Pacific Standard Time)"
  */
 export class IO<A> extends Container<Effect<A>> {
-  private effect: Effect<A>;
-
   constructor(effect: Effect<A>, trackId: NullOr<string> = null) {
     super(effect, trackId);
-    this.effect = effect;
   }
 
   static of<T>(val: T) {
@@ -37,18 +34,18 @@ export class IO<A> extends Container<Effect<A>> {
   }
 
   map<B>(f: (val: A) => B): IO<B> {
-    return new IO(() => f(this.effect()));
+    return new IO(() => f(this._value()));
   }
 
   fmap<B>(f: (val: A) => IO<B>): IO<B> {
-    return new IO(() => f(this.effect()).effect());
+    return new IO(() => f(this._value())._value());
   }
 
   execute() {
-    return this.effect();
+    return this._value();
   }
 
   async executeAsnyc() {
-    return await (this.effect as AsyncEffect<A>)();
+    return await (this._value as AsyncEffect<A>)();
   }
 }
