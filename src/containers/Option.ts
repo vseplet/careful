@@ -15,20 +15,8 @@ export abstract class OptionAbstract<T> extends Container<T> {
     this._value = value;
   }
 
-  /**
-   * Map
-   * @param cb - The callback function to map the value.
-   * @returns {OptionAbstract<T> | OptionAbstract<NT>} - The mapped value.
-   * @example
-   */
   abstract m<NT>(cb: (v: T) => NT): OptionAbstract<T> | OptionAbstract<NT>;
 
-  /**
-   * Async Map
-   * @param cb - The callback function to map the value.
-   * @returns {Promise<OptionAbstract<T> | OptionAbstract<NT>>} - The mapped value.
-   * @example
-   */
   abstract am<NT>(
     cb: (v: T) => Promise<NT>,
   ): Promise<OptionAbstract<T> | OptionAbstract<NT>>;
@@ -159,6 +147,7 @@ export class None extends OptionAbstract<null> {
  * // -> Some(["M", "u", "l", " ", "x", "0", ".", "1"]) or None
  */
 export type Option<T> = Some<T> | None;
+export type OptionError<T extends Error> = Some<T> | None;
 
 /**
  * Some - Creates a new Some instance.
