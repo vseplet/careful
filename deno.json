@@ -1,73 +1,29 @@
 {
-  "test": {
-    "files": {
-      "include": ["tests/"]
+  "lock": false,
+  "name": "@vseplet/careful",
+  "version": "0.0.0",
+  "workflows": {
+    "UpdateSemverDeployJsr": {
+      "versionsFilePath": "./source/versions.ts"
     }
   },
-
-  "lint": {
-    "files": {
-      "include": ["src/"]
-    },
-    "rules": {
-      "noImplicitThis": false,
-      "tags": ["recommended"],
-      "include": ["ban-untagged-todo"],
-      "exclude": []
-    }
+  "exports": {
+    ".": "./source/mod.ts",
+    "./containers": "./source/containers/mod.ts",
+    "./types": "./source/types.ts"
   },
-
+  "imports": {
+    "$types": "./source/types.ts",
+    "@std/uuid": "jsr:@std/uuid@1.0.0"
+  },
+  "tasks": {
+    "pub-dry": "deno publish --dry-run --allow-slow-types"
+  },
   "fmt": {
-    "options": {
-      "useTabs": false,
-      "lineWidth": 80,
-      "indentWidth": 2,
-      "singleQuote": true,
-      "proseWrap": "preserve"
-    },
-
     "files": {
-      "include": [
-        "src/",
-        "tests/",
-        "examples/",
-        "deno.json",
-        "deps.ts",
-        "mod.ts"
-      ],
       "exclude": [
-        ".vacode",
-        ".idea",
-        ".fleet",
-        ".git"
+        "./source/versions.ts"
       ]
     }
-  },
-
-  "compilerOptions": {
-    "target": "esnext",
-
-    "allowJs": false,
-    "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "isolatedModules": true,
-    "module": "esnext",
-    "moduleDetection": "force",
-
-    "lib": ["deno.window"],
-
-    "useDefineForClassFields": true,
-    "experimentalDecorators": true,
-
-    "strict": true,
-    "alwaysStrict": true,
-    "useUnknownInCatchVariables": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noUnusedParameters": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true
   }
 }

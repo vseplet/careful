@@ -1,2 +1,3 @@
 # careful
-[![deno.land/x/careful](https://shield.deno.dev/x/careful)](https://deno.land/x/careful)
+
+[![JSR](https://jsr.io/badges/@vseplet/careful)](https://jsr.io/@vseplet/careful)

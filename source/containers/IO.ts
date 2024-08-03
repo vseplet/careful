@@ -1,5 +1,5 @@
-import { NullOr } from '../types.ts';
-import { Container } from './Container.ts';
+import type { NullOr } from "../types.ts";
+import { Container } from "./Container.ts";
 
 export type Effect<T> = () => T;
 export type AsyncEffect<T> = () => Promise<T>;

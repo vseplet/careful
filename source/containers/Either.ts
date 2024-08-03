@@ -1,5 +1,5 @@
-import { NullOr } from '../types.ts';
-import { Container } from './Container.ts';
+import { NullOr } from "../types.ts";
+import { Container } from "./Container.ts";
 
 export abstract class EitherAbstract<T> extends Container<T> {
   _value: T;

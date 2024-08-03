@@ -1,5 +1,5 @@
-import { NullOr } from '../types.ts';
-import { Container } from './Container.ts';
+import type { NullOr } from "../types.ts";
+import { Container } from "./Container.ts";
 
 /**
  * OptionAbstract is a type that represents either a value or no value.

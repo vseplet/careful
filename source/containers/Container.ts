@@ -1,5 +1,5 @@
-import { uuid } from '../../deps.ts';
-import { NullOr } from '../types.ts';
+import type { NullOr } from "../types.ts";
+import { v1 } from "@std/uuid";
 
 /**
  * Container is a base class for all entities that have a value and a trackId.
@@ -14,7 +14,7 @@ export class Container<T> {
   protected readonly _value: T;
 
   constructor(value: T, trackId: NullOr<string> = null) {
-    this._trackId = trackId || uuid.v1.generate().toString();
+    this._trackId = trackId || v1.generate().toString();
     this._value = value;
   }
 
